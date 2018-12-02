@@ -1,0 +1,10 @@
+{
+    "require": {
+        "slim/slim": "^3.11",
+        "irap/autoloader": "^1.0",
+        "irap/core-libs": "^1.1",
+        "irap/mysql-objects": "^3.2",
+        "irap/migrations": "^1.0",
+        "programster/guzzle-wrapper": "^1.0"
+    }
+}
