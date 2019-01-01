@@ -5,6 +5,7 @@
         "irap/core-libs": "^1.1",
         "irap/mysql-objects": "^3.2",
         "irap/migrations": "^1.0",
-        "programster/guzzle-wrapper": "^1.0"
+        "programster/guzzle-wrapper": "^1.0",
+        "programster/orm-generator": "^0.1.0"
     }
 }

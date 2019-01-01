@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b48b8da0f68e55868376cb19cb58b05",
+    "content-hash": "66b98b32a48006b07945e0811d9ed845",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -576,6 +576,48 @@
                 "library"
             ],
             "time": "2018-09-08T17:51:45+00:00"
+        },
+        {
+            "name": "programster/orm-generator",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/programster/package-orm-generator.git",
+                "reference": "831f26f3ce1037f4bcca56cfe0582f5616276c26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/programster/package-orm-generator/zipball/831f26f3ce1037f4bcca56cfe0582f5616276c26",
+                "reference": "831f26f3ce1037f4bcca56cfe0582f5616276c26",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Programster\\OrmGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stuart Page",
+                    "email": "sdpagent@gmail.com",
+                    "homepage": "https://blog.programster.org/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Library to make developing for AWS much easier",
+            "homepage": "https://github.com/programster/package-orm-generator",
+            "keywords": [
+                "orm"
+            ],
+            "time": "2018-12-31T18:05:26+00:00"
         },
         {
             "name": "psr/container",
