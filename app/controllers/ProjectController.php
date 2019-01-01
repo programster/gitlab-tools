@@ -6,6 +6,11 @@
 
 class ProjectController extends AbstractController
 {
+    
+    /**
+     * List all the projects in Gitlab.
+     * @return type
+     */
     private function index()
     {
         $projects = Project::loadAll();
@@ -66,11 +71,17 @@ class ProjectController extends AbstractController
         );
         
         
+        $body = 
+            '<div class="row">
+                <div class="col-xl-6"><h2>Burndown</h2>' . new ViewBurndownChart() . '</div>
+                <div class="col-xl-6"><h2>Issues</h2>' . new ViewIssuesTable(...$projectIssues) . '</div>
+            </div>';
+        
         $myHtml = new ViewTemplate(
             $tabTitle = "Project {$projectId}", 
             $jumbotron, 
             $navbar, 
-            new ViewIssuesTable(...$projectIssues),
+            $body,
             new ViewFooter()
         );
         
@@ -79,6 +90,10 @@ class ProjectController extends AbstractController
     }
     
     
+    /**
+     * Register the routes with the Slim app.
+     * @param type $app
+     */
     public static function registerRoutes($app) 
     {
         $app->get('/projects', function  (\Slim\Http\Request $request, \Slim\Http\Response $response, $args) {

@@ -43,6 +43,12 @@ abstract class GitlabResource
     }
     
     
+    /**
+     * Load an individual resource from the API.
+     * @param int $id
+     * @return type
+     * @throws Exception
+     */
     public static function load(int $id)
     {
         $url = static::getResourceUrl() . '/' . $id;
