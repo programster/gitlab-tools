@@ -8,12 +8,62 @@
 
 class ViewBurndownChart extends AbstractView
 {
-    private $m_issues;
+    private $m_progressLogs;
+    private $m_chartData;
     
     
-    public function __construct(Issue ...$issues)
+    public function __construct(ProgressLog ...$logs)
     {
-        $this->m_issues = $issues;
+        $ascSorter = function($a, $b) {
+            return $a->getWhen() <=> $b->getWhen();
+        };
+        
+        uasort($logs, $ascSorter);
+        
+        $this->m_progressLogs = $logs;
+        $this->m_chartData = array();
+        $lastLog = null;
+        
+        foreach ($logs as $log)
+        {
+            /* @var $log ProgressLog */
+            $this->m_chartData[] = [$log->getWhen(),  ($log->getSecondsRemaining() / 60 / 60), null];
+            $lastLog = $log;
+        }
+        
+        $lastRow = array_pop($this->m_chartData);
+        $lastRow[2] = "Last Record";
+        $this->m_chartData[] = $lastRow;
+        
+        /* calculate a "work rate" to predict the end assuming no additional tasks added */
+        
+        $logs = array_reverse($logs);
+        
+        $workRate = 1; # means 1 second of estimated work will be done per second
+        
+        if (count($logs) < 3)
+        {
+            // cannot calculate a work rate, just estimate it as 1 for now.
+        }
+        else
+        {
+            $timeEnd = $logs[0]->getWhen();
+            $timeStart = $logs[2]->getWhen();
+            $timeDiff = $timeEnd - $timeStart;
+            $workTimeDone = $logs[0]->getSecondsWorked() + $logs[1]->getSecondsWorked() + $logs[2]->getSecondsWorked();
+            $workRate = $workTimeDone / $timeDiff;
+            
+            // can't be a burn DOWN if work rate is 0 so set a minimum.
+            if ($workRate <= 0)
+            {
+                $workRate = 0.1;
+            }
+        }
+        
+        // Using the work rate, add estimated record of when project finishes
+        $estimatedTimeNeededToComplete = $lastLog->getSecondsRemaining() / $workRate;
+        $estimatedCompletionTimestamp = $lastLog->getWhen() + $estimatedTimeNeededToComplete;
+        $this->m_chartData[] = [$estimatedCompletionTimestamp,  0, null];
     }
     
     
@@ -44,20 +94,14 @@ class ViewBurndownChart extends AbstractView
      */
     function drawChart() 
     {
-        var chartData = [
-            [1,  1, null],
-            [2, 10, null],
-            [3, 15, null],
-            [4, 11, null],
-            [5,  9, "Today"],
-            [6,  7, null],
-            [7,  5, null],
-            [8,  3, null],
-            [9,  1, null]
-        ];
+       var chartData = <?= json_encode($this->m_chartData); ?>
+        
+        for ( var i = 0; i < chartData.length; i++ ) { 
+            chartData[i][0] = new Date( chartData[i][0] * 1000 );
+        }
         
         var data = new google.visualization.DataTable();
-        data.addColumn("number", "day #");
+        data.addColumn("date", "day #");
         data.addColumn("number", "Hours Remaining");
         data.addColumn({type: "string", role: "annotation"});
         
@@ -70,7 +114,7 @@ class ViewBurndownChart extends AbstractView
         var options = {
             curveType: "function",
             chartArea: {
-                width: "90%", 
+                width: "85%", 
                 height: "80%"
             },
             selectionMode: "multiple",
@@ -86,6 +130,7 @@ class ViewBurndownChart extends AbstractView
                 orientation: "vertical" 
             },
             vAxis: {
+                title: "Time Left (hours)",
                 gridlines: {
                     color: "transparent"
                 }
@@ -98,7 +143,7 @@ class ViewBurndownChart extends AbstractView
             annotations: {
                 style: "dot"
             },
-            legend : "none"
+            legend: "none"
         };
         
         var chart = new google.visualization.LineChart(document.getElementById("curve_chart"));

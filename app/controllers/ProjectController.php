@@ -71,11 +71,12 @@ class ProjectController extends AbstractController
             $project->getName(), 
             (string) $project->getDescription() . "</p><p>{$spent} / {$estimate} hours"
         );
-        
+            
+        $logs = ProgressLog::loadForProject($project);
         
         $body = 
             '<div class="row">
-                <div class="col-xl-6"><h2>Burndown</h2>' . new ViewBurndownChart(...$allProjectIssues) . '</div>
+                <div class="col-xl-6"><h2>Burndown</h2>' . new ViewBurndownChart(...$logs) . '</div>
                 <div class="col-xl-6"><h2>Open Issues</h2>' . new ViewProjectIssuesTable(...$openIssues) . '</div>
             </div>';
         
