@@ -16,8 +16,6 @@ abstract class GitlabResource
         $resources = [];
         $data['private_token'] = GITLAB_ACCESS_TOKEN;
         $data['per_page'] = 1000;
-        $data['order_by'] = 'name';
-        $data['sort'] = 'asc';
         
         $request = new Programster\GuzzleWrapper\Request(
             Programster\GuzzleWrapper\Method::createGet(), 
