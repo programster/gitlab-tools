@@ -8,9 +8,12 @@
 
 class ViewBurndownChart extends AbstractView
 {
-    public function __construct()
+    private $m_issues;
+    
+    
+    public function __construct(Issue ...$issues)
     {
-        
+        $this->m_issues = $issues;
     }
     
     
@@ -20,13 +23,11 @@ class ViewBurndownChart extends AbstractView
 
 
     <div id="curve_chart" style="width: 100%; height: 500px"></div>
-
-
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
     google.charts.load("current", {"packages":["corechart"]});
     google.charts.setOnLoadCallback(chartLoadCallback);
-
+    
     /**
      * Hook to be called by google chart when it has finished loading.
      */ 
@@ -35,8 +36,8 @@ class ViewBurndownChart extends AbstractView
         drawChart();
         window.onresize = function(event) { drawChart(); };
     }
-
-
+    
+    
     /**
      * Draw the chart. Calling this will replace the chart. You may wish to do this when you
      * resize a window etc.
@@ -66,9 +67,6 @@ class ViewBurndownChart extends AbstractView
             data.addRow(row);
         }
         
-
-        //var dataTable = google.visualization.arrayToDataTable(chartData);
-
         var options = {
             curveType: "function",
             chartArea: {
@@ -102,7 +100,7 @@ class ViewBurndownChart extends AbstractView
             },
             legend : "none"
         };
-
+        
         var chart = new google.visualization.LineChart(document.getElementById("curve_chart"));
         chart.draw(data, options);
     }
@@ -112,4 +110,4 @@ class ViewBurndownChart extends AbstractView
 <?php
     }
 
-}
+}n
