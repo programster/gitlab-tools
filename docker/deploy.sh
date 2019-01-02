@@ -48,5 +48,6 @@ docker run -d \
   --env-file ../app/.env \
   --restart=always \
   --name="$PROJECT_NAME" \
+  -v $SCRIPTPATH/../app/.env:/var/www/my-site/.env \
   $CONTAINER_IMAGE
 
