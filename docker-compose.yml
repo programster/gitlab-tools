@@ -9,7 +9,7 @@ services:
     env_file:
       - app/.env
     volumes:
-      - $HOME/volumes/mysql/data:/var/lib/mysql
+      - $HOME/gitlab-tools/mysql/data:/var/lib/mysql
       
   app:
     image: 'programster/gitlab-tools'
@@ -19,5 +19,5 @@ services:
       - database
     ports:
       - '80:80'
-    env_file:
-      - app/.env
+    volumes:
+      - $HOME/gitlab-tools/.env:/var/www/my-site/.env
