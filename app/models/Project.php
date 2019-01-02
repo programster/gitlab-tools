@@ -29,6 +29,14 @@ class Project extends GitlabResource
     }
     
     
+    public static function loadAll(array $requestOptions = array()) : array
+    {
+        $requestOptions['order_by'] = 'name';
+        $requestOptions['sort'] = 'asc';
+        return parent::loadAll($requestOptions);
+    }
+    
+    
     protected static function getResourceUrl(): string 
     {
         return $url = GITLAB_URL . '/api/v4/projects';
@@ -45,32 +53,9 @@ class Project extends GitlabResource
     }
     
     
-    public function loadIssues()
+    public function loadIssues(array $requestOptions = array())
     {
-        $issues = array();
-        $url = self::getResourceUrl() . '/' . $this->m_id . '/issues' ;
-                
-        $request = new Programster\GuzzleWrapper\Request(
-            Programster\GuzzleWrapper\Method::createGet(), 
-            $url,
-            ['private_token' => GITLAB_ACCESS_TOKEN, 'per_page' => 1000, 'state' => 'opened']
-        );
-        
-        $response = $request->send();
-        $body = $response->getBody();
-        $info = GuzzleHttp\json_decode($body);
-        
-        if ($info === null)
-        {
-            throw new Exception("Failed to get resource");
-        }
-        
-        foreach ($info as $issue)
-        {
-            $issues[] = Issue::loadFromJsonObject($issue);
-        }
-        
-        return $issues;
+        return Issue::loadForProject($this->m_id, $requestOptions);
     }
     
     

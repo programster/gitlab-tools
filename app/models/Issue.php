@@ -41,10 +41,40 @@ class Issue extends GitlabResource
         $data = [
             'per_page' => 1000,
             'scope' => 'all',
-            'state' => 'opened'
         ];
         
         return parent::loadAll($data);
+    }
+    
+    
+    public static function loadForProject(int $projectId, array $requestOptions = array())
+    {
+        $issues = array();
+        $url = GITLAB_URL . '/api/v4/projects/' . $projectId . '/issues' ;
+        $requestOptions['private_token'] = GITLAB_ACCESS_TOKEN;
+        $requestOptions['per_page'] = 1000;
+                
+        $request = new Programster\GuzzleWrapper\Request(
+            Programster\GuzzleWrapper\Method::createGet(), 
+            $url,
+            $requestOptions
+        );
+        
+        $response = $request->send();
+        $body = $response->getBody();
+        $info = GuzzleHttp\json_decode($body);
+        
+        if ($info === null)
+        {
+            throw new Exception("Failed to get resource");
+        }
+        
+        foreach ($info as $issue)
+        {
+            $issues[] = Issue::loadFromJsonObject($issue);
+        }
+        
+        return $issues;
     }
     
     
@@ -56,11 +86,20 @@ class Issue extends GitlabResource
         $issue->m_timeStats = TimeStats::createFromJsonObj($data->time_stats);
         $issue->m_projectId = $data->project_id;
         $issue->m_state = $data->state;
-        $issue->m_assignee = $data->assignee;
         $issue->m_webUrl = $data->web_url;
         $issue->m_updatedAt = $data->updated_at;
         $issue->m_dueDate = $data->due_date;
         $issue->m_milestone = $data->milestone;
+        
+        if (!empty($data->assignee))
+        {
+            $issue->m_assignee = $data->assignee->name;
+        }
+        else
+        {
+            $issue->m_assignee = "";
+        }
+        
         return $issue;
     }
     
@@ -73,4 +112,5 @@ class Issue extends GitlabResource
     public function getProject() : Project { return Project::load($this->m_projectId); }
     public function getState() : string { return $this->m_state; }
     public function getWebUrl() : string { return $this->m_webUrl; }
+    public function getAssignee() : string { return $this->m_assignee;}
 }
