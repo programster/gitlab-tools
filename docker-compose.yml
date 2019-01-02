@@ -1,0 +1,23 @@
+version: '3'
+services:
+  database:
+    image: mariadb
+    container_name: db
+    restart: always
+    ports:
+      - 3306:3306
+    env_file:
+      - app/.env
+    volumes:
+      - $HOME/volumes/mysql/data:/var/lib/mysql
+      
+  app:
+    image: 'programster/gitlab-tools'
+    links:
+      - database
+    depends_on:
+      - database
+    ports:
+      - '80:80'
+    env_file:
+      - app/.env
