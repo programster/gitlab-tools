@@ -12,7 +12,7 @@ services:
       - $HOME/gitlab-tools/mysql/data:/var/lib/mysql
       
   app:
-    image: 'programster/gitlab-tools'
+    image: 'gitlab-tools'
     links:
       - database
     depends_on:
