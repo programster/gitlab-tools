@@ -5,6 +5,12 @@
 service apache2 stop
 
 
+# ensure the database is fully started up first.
+# in future we need to remove this and have migrations gracefully
+# handle if db not up yet.
+sleep 10
+
+
 # Run migrations on startup before the webserver has started
 /usr/bin/php /var/www/my-site/scripts/migrate.php
 
