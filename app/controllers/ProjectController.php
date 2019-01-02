@@ -41,18 +41,18 @@ class ProjectController extends AbstractController
         $project = Project::load($projectId);
         $navbar = new ViewDefaultNavbar($this->m_request);
         
-        $filter = array('state' => 'opened');
-        $openIssues = $project->loadIssues($filter);
+        $openIssues = array();
         $allProjectIssues = $project->loadIssues();
         
         $estimate = 0;
         $spent = 0;
         
-        foreach ($openIssues as $issue)
+        foreach ($allProjectIssues as $issue)
         {
             /* @var $issue Issue */
             if ($issue->getState() !== "closed")
             {
+                $openIssues[] = $issue;
                 $timeStats = $issue->getTimeStats();
                 
                 if ($timeStats->getTotalTimeSpent() < $timeStats->getTimeEstimate())
