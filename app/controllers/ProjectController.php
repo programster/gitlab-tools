@@ -41,12 +41,14 @@ class ProjectController extends AbstractController
         $project = Project::load($projectId);
         $navbar = new ViewDefaultNavbar($this->m_request);
         
-        $projectIssues = $project->loadIssues();
+        $filter = array('state' => 'opened');
+        $openIssues = $project->loadIssues($filter);
+        $allProjectIssues = $project->loadIssues();
         
         $estimate = 0;
         $spent = 0;
         
-        foreach ($projectIssues as $issue)
+        foreach ($openIssues as $issue)
         {
             /* @var $issue Issue */
             if ($issue->getState() !== "closed")
@@ -73,8 +75,8 @@ class ProjectController extends AbstractController
         
         $body = 
             '<div class="row">
-                <div class="col-xl-6"><h2>Burndown</h2>' . new ViewBurndownChart() . '</div>
-                <div class="col-xl-6"><h2>Issues</h2>' . new ViewIssuesTable(...$projectIssues) . '</div>
+                <div class="col-xl-6"><h2>Burndown</h2>' . new ViewBurndownChart(...$allProjectIssues) . '</div>
+                <div class="col-xl-6"><h2>Open Issues</h2>' . new ViewProjectIssuesTable(...$openIssues) . '</div>
             </div>';
         
         $myHtml = new ViewTemplate(
