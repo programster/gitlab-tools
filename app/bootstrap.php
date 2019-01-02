@@ -28,7 +28,7 @@ $requiredVars = array(
 
 foreach ($requiredVars as $requiredVar)
 {
-    $value = getenv($rquiredVar);
+    $value = getenv($requiredVar);
     
     if ($value === false)
     {
