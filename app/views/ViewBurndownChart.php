@@ -109,5 +109,4 @@ class ViewBurndownChart extends AbstractView
 
 <?php
     }
-
-}n
+}
