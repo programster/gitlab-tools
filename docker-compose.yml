@@ -21,3 +21,4 @@ services:
       - '80:80'
     volumes:
       - $HOME/gitlab-tools/.env:/var/www/my-site/.env
+#      - $HOME/gitlab-tools/app:/var/www/my-site
