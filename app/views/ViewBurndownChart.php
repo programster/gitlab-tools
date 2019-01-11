@@ -39,7 +39,7 @@ class ViewBurndownChart extends AbstractView
         
         $logs = array_reverse($logs);
         
-        $workRate = 1; # means 1 second of estimated work will be done per second
+        $workRate = 0.3; # assume devs work 8 hours a day which is 8/24 = 0.333...
         
         if (count($logs) < 3)
         {
