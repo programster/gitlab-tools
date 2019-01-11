@@ -13,6 +13,8 @@ services:
       
   app:
     image: 'gitlab-tools'
+    container_name: app
+    restart: always
     links:
       - database
     depends_on:
