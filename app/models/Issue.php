@@ -18,7 +18,7 @@ class Issue extends GitlabResource
     private $m_updatedAt;
     private $m_closedAt; //nullable
     private $m_closedBy; // nullable
-    private $m_labels; // array
+    private $m_labels = array(); // array
     private $m_milestone;
     private $m_assignees; // array
     private $m_author; // user object
@@ -90,6 +90,7 @@ class Issue extends GitlabResource
         $issue->m_updatedAt = $data->updated_at;
         $issue->m_dueDate = $data->due_date;
         $issue->m_milestone = $data->milestone;
+        $issue->m_labels = $data->labels;
         
         if (!empty($data->assignee))
         {
@@ -112,5 +113,6 @@ class Issue extends GitlabResource
     public function getProject() : Project { return Project::load($this->m_projectId); }
     public function getState() : string { return $this->m_state; }
     public function getWebUrl() : string { return $this->m_webUrl; }
-    public function getAssignee() : string { return $this->m_assignee;}
+    public function getAssignee() : string { return $this->m_assignee; }
+    public function getLabels() : array { return $this->m_labels; }
 }
