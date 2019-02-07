@@ -162,8 +162,8 @@ class ProjectController extends AbstractController
         header("Content-Disposition: attachment; filename=file.csv");
         header("Pragma: no-cache");
         header("Expires: 0");
-        fwrite($tempFileHandle, BYTE_ORDER_MARK); // BOM first for excel to work
         $outputStream = fopen("php://output", 'w');
+        fwrite($outputStream, BYTE_ORDER_MARK); // BOM first for excel to work
         $content = file_get_contents($tempFilename);
         fwrite($outputStream, $content);
     }
