@@ -14,7 +14,12 @@ class SiteSpecific
         
         if ($db === null)
         {
-            $db = new mysqli(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
+            $db = new mysqli(
+                getenv('MYSQL_HOST'), 
+                getenv('MYSQL_USER'), 
+                getenv('MYSQL_PASSWORD'), 
+                getenv('MYSQL_DATABASE')
+            );
         }
         
         return $db;

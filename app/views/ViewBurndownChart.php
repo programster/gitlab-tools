@@ -17,53 +17,57 @@ class ViewBurndownChart extends AbstractView
         $ascSorter = function($a, $b) {
             return $a->getWhen() <=> $b->getWhen();
         };
-        
+
         uasort($logs, $ascSorter);
-        
+
         $this->m_progressLogs = $logs;
         $this->m_chartData = array();
-        $lastLog = null;
         
-        foreach ($logs as $log)
+        if (count($logs) > 0)
         {
-            /* @var $log ProgressLog */
-            $this->m_chartData[] = [$log->getWhen(),  ($log->getSecondsRemaining() / 60 / 60), null];
-            $lastLog = $log;
-        }
-        
-        $lastRow = array_pop($this->m_chartData);
-        $lastRow[2] = "Last Record";
-        $this->m_chartData[] = $lastRow;
-        
-        /* calculate a "work rate" to predict the end assuming no additional tasks added */
-        
-        $logs = array_reverse($logs);
-        
-        $workRate = 0.3; # assume devs work 8 hours a day which is 8/24 = 0.333...
-        
-        if (count($logs) < 3)
-        {
-            // cannot calculate a work rate, just estimate it as 1 for now.
-        }
-        else
-        {
-            $timeEnd = $logs[0]->getWhen();
-            $timeStart = $logs[2]->getWhen();
-            $timeDiff = $timeEnd - $timeStart;
-            $workTimeDone = $logs[0]->getSecondsWorked() + $logs[1]->getSecondsWorked() + $logs[2]->getSecondsWorked();
-            $workRate = $workTimeDone / $timeDiff;
-            
-            // can't be a burn DOWN if work rate is 0 so set a minimum.
-            if ($workRate <= 0)
+            $lastLog = null;
+
+            foreach ($logs as $log)
             {
-                $workRate = 0.1;
+                /* @var $log ProgressLog */
+                $this->m_chartData[] = [$log->getWhen(),  ($log->getSecondsRemaining() / 60 / 60), null];
+                $lastLog = $log;
             }
+
+            $lastRow = array_pop($this->m_chartData);
+            $lastRow[2] = "Last Record";
+            $this->m_chartData[] = $lastRow;
+
+            /* calculate a "work rate" to predict the end assuming no additional tasks added */
+
+            $logs = array_reverse($logs);
+
+            $workRate = 0.3; # assume devs work 8 hours a day which is 8/24 = 0.333...
+
+            if (count($logs) < 3)
+            {
+                // cannot calculate a work rate, just estimate it as 1 for now.
+            }
+            else
+            {
+                $timeEnd = $logs[0]->getWhen();
+                $timeStart = $logs[2]->getWhen();
+                $timeDiff = $timeEnd - $timeStart;
+                $workTimeDone = $logs[0]->getSecondsWorked() + $logs[1]->getSecondsWorked() + $logs[2]->getSecondsWorked();
+                $workRate = $workTimeDone / $timeDiff;
+
+                // can't be a burn DOWN if work rate is 0 so set a minimum.
+                if ($workRate <= 0)
+                {
+                    $workRate = 0.1;
+                }
+            }
+
+            // Using the work rate, add estimated record of when project finishes
+            $estimatedTimeNeededToComplete = $lastLog->getSecondsRemaining() / $workRate;
+            $estimatedCompletionTimestamp = $lastLog->getWhen() + $estimatedTimeNeededToComplete;
+            $this->m_chartData[] = [$estimatedCompletionTimestamp,  0, null];
         }
-        
-        // Using the work rate, add estimated record of when project finishes
-        $estimatedTimeNeededToComplete = $lastLog->getSecondsRemaining() / $workRate;
-        $estimatedCompletionTimestamp = $lastLog->getWhen() + $estimatedTimeNeededToComplete;
-        $this->m_chartData[] = [$estimatedCompletionTimestamp,  0, null];
     }
     
     

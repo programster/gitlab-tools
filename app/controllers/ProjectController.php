@@ -106,7 +106,7 @@ class ProjectController extends AbstractController
         
         $navbar = new ViewDefaultNavbar($this->m_request);
         
-        $allProjectIssues = $project->loadIssues();
+        $allProjectIssues = $project->loadIssues(['state' => 'opened']);
         
         $estimate = 0;
         $spent = 0;
@@ -130,6 +130,8 @@ class ProjectController extends AbstractController
             $issueArray = array(
                 "Issue ID" => $issue->getId(),
                 "Title" => $issue->getTitle(),
+                "Description" => $issue->getDescription() ?? "",
+                "Web URL" => $issue->getWebUrl(),
                 "State" => $issue->getState(),
                 "Time Spent (seconds)" => $issue->getTimeStats()->getTotalTimeSpent(),
                 "Time Estimate (seconds)" => $issue->getTimeStats()->getTimeEstimate(),
@@ -155,6 +157,9 @@ class ProjectController extends AbstractController
         }
         
         $tempFilename = tempnam('/tmp', 'export_');
+        $fh = fopen($tempFilename, 'w+');
+        fwrite($fh, BYTE_ORDER_MARK); // BOM first for excel to work
+        fclose($fh);
         iRAP\CoreLibs\CsvLib::convertArrayToCsv($tempFilename, $exportData, true);
         
         // Output as CSV
