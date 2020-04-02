@@ -52,7 +52,7 @@ class Issue extends GitlabResource
         $issues = array();
         $url = GITLAB_URL . '/api/v4/projects/' . $projectId . '/issues' ;
         $requestOptions['private_token'] = GITLAB_ACCESS_TOKEN;
-        $requestOptions['per_page'] = 1000;
+        $requestOptions['per_page'] = 100;
                 
         $request = new Programster\GuzzleWrapper\Request(
             Programster\GuzzleWrapper\Method::createGet(), 
@@ -83,6 +83,7 @@ class Issue extends GitlabResource
         $issue = new Issue();
         $issue->m_id = $data->id;
         $issue->m_title = $data->title;
+        $issue->m_description = $data->description;
         $issue->m_timeStats = TimeStats::createFromJsonObj($data->time_stats);
         $issue->m_projectId = $data->project_id;
         $issue->m_state = $data->state;
@@ -108,7 +109,7 @@ class Issue extends GitlabResource
     # Accessors
     public function getId() : int { return $this->m_id; }
     public function getTitle() : string { return $this->m_title; }
-    public function getDescription() : string { return $this->m_description; }
+    public function getDescription() : ?string { return $this->m_description; }
     public function getTimeStats() : TimeStats { return $this->m_timeStats; }
     public function getProject() : Project { return Project::load($this->m_projectId); }
     public function getState() : string { return $this->m_state; }

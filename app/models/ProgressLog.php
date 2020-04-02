@@ -42,14 +42,22 @@ class ProgressLog
         }
         
         /* @var $result mysqli_result */
-        while (($object = $result->fetch_object(__CLASS__)) != null)
-        {
-            $logs[] = $object;
-        }
         
-        if (count($logs) == 0)
+        if ($result->num_rows > 0)
         {
-            die($query);
+            while (($object = $result->fetch_object(__CLASS__)) != null)
+            {
+                $logs[] = $object;
+            }
+
+            if (count($logs) == 0)
+            {
+                die($query);
+            }
+        }
+        else 
+        {
+            $logs = array();
         }
         
         return $logs;
