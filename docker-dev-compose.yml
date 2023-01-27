@@ -12,6 +12,8 @@ services:
             - database
         ports:
             - '80:80'
+        volumes:
+            - ./app:/var/www/my-site
         environment:
             - ENVIRONMENT=${ENVIRONMENT}
             - GITLAB_URL=${GITLAB_URL}
