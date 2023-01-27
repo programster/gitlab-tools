@@ -8,8 +8,10 @@ service apache2 stop
 # ensure the database is fully started up first.
 # in future we need to remove this and have migrations gracefully
 # handle if db not up yet.
-sleep 10
+sleep 3
 
+# Create the .env file on startup.
+/usr/bin/php /root/create-env-file.php /var/www/my-site/.env
 
 # Run migrations on startup before the webserver has started
 /usr/bin/php /var/www/my-site/scripts/migrate.php

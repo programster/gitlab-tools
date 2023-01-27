@@ -1,23 +1,19 @@
 # Due to layout of this project, the dockerfile will be moved up two directories and run during
 # the build. Thus when performing any ADD commands, remember that this is "where you are"
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # Don't prompt for timezone etc.
 env DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN apt-get dist-upgrade -y
-
-RUN apt-get install -y php7.2
-
+RUN apt-get update && apt-get dist-upgrade -y
 
 
 # Install the relevant packages
-RUN apt-get install -y vim apache2 php7.2-cli php7.2-mysql curl php7.2-curl
+RUN apt-get install -y vim apache2 php8.1-cli php8.1-mysql curl php8.1-curl php8.1
 
 # Enable the php mod we just installed
-RUN a2enmod php7.2
+RUN a2enmod php8.1
 RUN a2enmod rewrite
 
 
@@ -38,8 +34,8 @@ ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
 ###### Update the php INI settings #########
 
 # Set display errors to true. We will disable them based on environment in PHP.
-RUN sed -i 's;display_errors = .*;display_errors = On;' /etc/php/7.2/apache2/php.ini
-RUN sed -i 's;display_errors = .*;display_errors = On;' /etc/php/7.2/cli/php.ini
+RUN sed -i 's;display_errors = .*;display_errors = On;' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's;display_errors = .*;display_errors = On;' /etc/php/8.1/cli/php.ini
 
 # Uncomment any of these if you need them.
 
@@ -60,6 +56,7 @@ RUN apt-get install cron -y
 
 # Add the startup script to the container. This will run when container starts.
 ADD docker/startup.sh /root/startup.sh
+ADD docker/create-env-file.php /root/create-env-file.php
 
 # Update our apache sites available with the config we created
 ADD docker/apache-config.conf /etc/apache2/sites-enabled/000-default.conf
