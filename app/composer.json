@@ -8,5 +8,18 @@
         "programster/guzzle-wrapper": "^1.0",
         "programster/orm-generator": "^0.1.0",
         "symfony/dotenv": "^3.4"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform" : {
+            "php": "8.1.0",
+            "ext-simplexml": "1",
+            "ext-mbstring": "1",
+            "ext-mysqli": "1",
+            "ext-dom": "1",
+            "ext-xml": "1",
+            "ext-xmlwriter": "1",
+            "ext-curl": "1"
+        }
     }
 }
